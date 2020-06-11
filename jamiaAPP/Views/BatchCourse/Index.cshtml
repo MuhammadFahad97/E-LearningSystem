@@ -1,0 +1,296 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+<div style="position:relative;color:white;font-weight:400;font-family:Poppins, sans-serif;width:100%">
+
+    <div class="col-md-12" style="padding:0%">
+        <form id="form1" class="form-horizontal" novalidate="novalidate">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">ASSIGN COURSES TO BATCHES </h4>
+                </div>
+                <div class="row" style="padding-left:10%;padding-top:10px" >
+                    
+                    <div class="col-sm-7">
+                        <label class=" col-md-12  label-align">Select Course  which will be assigned to Batch<span class="required">*</span></label>
+                        
+                        <select style="padding:10px" class="selectpicker" id="select_list_course"></select>
+                        
+                    </div>
+
+                </div>
+
+                <div class="row" style="padding-left:10%;padding-top:10px">
+                    
+                    <div class="col-sm-7">
+                        <label class=" col-md-12  label-align">Select Batch to which Course needs to be assigned with<span class="required">*</span></label>
+                        <select style="padding:10px" class="selectpicker" id="select_list_batch"></select>
+                        
+                    </div>
+                </div>
+
+
+
+                <div id="submit_btns" class="card-footer text-center">
+                    <button class="btn btn-primary " type="reset">Reset</button>
+                    <button type="submit" id="submitbtn" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+  
+
+
+
+<!--<div class="col-md-12 ">
+    <div class="x_panel">
+        <div class="x_title">
+
+            <h2>ASSIGN COURSES TO BATCHES </h2>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card">
+            <br>
+            <form id="form1" class="col-md-12 form-label-left input_mask  " style="font-size:small " novalidate>
+
+
+
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-12  label-align">Select Course  which will be assigned to Batch<span class="required">*</span></label>
+                    <div class="col-md-12">
+                        <select class="selectpicker" id="select_list_course"></select>
+                    </div>
+                </div>
+
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-12  label-align">Select Batch to which Course needs to be assigned with<span class="required">*</span></label>
+                    <div class="col-md-12">
+                        <select class="selectpicker" id="select_list_batch"></select>
+                    </div>
+                </div>
+
+
+                <br />
+                <br />
+                <br />
+
+                <div class="form-group row">
+
+                    <div class="col-md-12 col-sm-12">
+                        <div class="ln_solid"></div>
+                        <button class="btn btn-primary " type="reset">Reset</button>
+                        <button type="button" id="submitbtn" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+    -->
+
+
+<div class="card col-md-12 ">
+    <h2 style="padding:1%">Batch-Course Table</h2>
+    <div class="card-body dataTables_wrapper dt-bootstrap4">
+
+        <table id="table1" style="width:100%;font-size:small " class="table table-striped dataTable dtr-inline">
+            <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                    <th>Course Instructor</th>
+                    <th>Batch ID</th>
+                    <th>Batch Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+    </div>
+</div>
+ </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    var tbl = null;
+    //Post
+    $("#submitbtn").click(function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var batchID = $('#select_list_batch option:selected').text();
+        var courseID = $('#select_list_course option:selected').text().split('.')[0];
+
+        console.log(batchID)
+        console.log(courseID)
+
+        $.ajax({
+            method: "POST",
+            url: "../BatchCourse/Create?batchid=" + batchID + "&courseid=" + courseID,
+
+            success: function (res) {
+                tbl.ajax.reload();
+                
+                //window.location.href = "http://localhost:1892";
+                if (res == "success") {
+
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: res,
+                        showConfirmButton: true,
+
+                    });
+                }
+                else {
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: res,
+                        showConfirmButton: true,
+
+                    });
+
+                }
+                //end
+            }
+        });
+    })
+    //GET
+    $(document).ready(function () {
+
+        $.ajax({
+            method: "GET",
+            url: " ../Course/List",
+            success: function (res) {
+                res.forEach(function (element) {
+
+                    $('#select_list_course').append($('<option/>', {
+                        value: element.courseID + "." + element.courseName,
+                        text: element.courseID + "." + element.courseName,
+
+                    }));
+
+                    
+                });
+
+                $('#select_list_course').selectpicker('refresh');
+                $('#select_list_course').selectpicker('val', res[0].courseID + "." + res[0].courseName);
+
+            }
+        });
+
+        $.ajax({
+            method: "GET",
+            url: " ../Batch/List",
+            success: function (res) {
+                res.forEach(function (element) {
+
+                    $('#select_list_batch').append($('<option/>', {
+                        value: element.batchID,
+                        text: element.batchID,
+                    }));
+
+
+                });
+
+                $('#select_list_batch').selectpicker('refresh');
+                $('#select_list_batch').selectpicker('val', res[0].batchID);
+            }
+        });
+
+
+        tbl = $('#table1').DataTable({
+            ajax: {
+                url: '../BatchCourse/List',
+                dataSrc: ''
+            },
+            responsive: true,
+            columns: [
+                { data: 'courseID' },
+                { data: 'courseName' },
+                { data: 'courseInstructor' },
+                { data: 'batchID' },
+                { data: 'batchDescription' },
+
+                {
+
+                    data: null,
+                    render: function (data) {
+                        return `<a href="javascript:void(0)" onclick='delete_c(${data.batchID},${data.courseID})' class="btn btn-link btn-danger btn-icon btn-sm remove" >
+                                 <i class="tim-icons icon-simple-remove"></i>    
+                                 </a>`
+
+
+                        // '<button  class="btn btn-danger btn-sm" onclick="delete_c(' + data.batchID + ',' + data.courseID + ')">Delete</button>'
+                    }
+                },
+
+            ],
+            searching: true,
+        });
+
+
+    });
+
+    //Delete
+    function delete_c(batchID, courseID) {
+        console.log(batchID)
+        console.log(courseID)
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                swalWithBootstrapButtons.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+
+                $.ajax({
+                    type: "POST",
+                    url: "../BatchCourse/Delete?batchid=" + batchID + "&courseid=" + courseID,
+                    success: function () {
+                        tbl.ajax.reload();
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+        })
+    }
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
+</script>
+
+

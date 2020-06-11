@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="01700875288d4840801af94a0b39d5ae" Name="Diagram1">
+        <EntityTypeShape EntityType="JamiaRDBModel.tbl_batch" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="JamiaRDBModel.tbl_campus" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="JamiaRDBModel.tbl_course" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="JamiaRDBModel.tbl_files" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="JamiaRDBModel.tbl_user" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="JamiaRDBModel.FK__tbl_user__BID__21B6055D" ManuallyRouted="false" />
+        <AssociationConnector Association="JamiaRDBModel.FK__tbl_user__CID__20C1E124" ManuallyRouted="false" />
+        <AssociationConnector Association="JamiaRDBModel.FK__tbl_files__fileC__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="JamiaRDBModel.tbl_batch_course" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<jamiaAPP.Models.tbl_campus>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.campusName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.campusAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.campusDescription)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.campusName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.campusAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.campusDescription)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.campusID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.campusID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.campusID })
+        </td>
+    </tr>
+}
+
+</table>

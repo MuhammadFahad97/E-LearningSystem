@@ -1,0 +1,371 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="JamiaRDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_batch">
+          <Key>
+            <PropertyRef Name="batchID" />
+          </Key>
+          <Property Name="batchID" Type="int" Nullable="false" />
+          <Property Name="batchDescription" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tbl_batch_course">
+          <Key>
+            <PropertyRef Name="CID" />
+            <PropertyRef Name="BID" />
+          </Key>
+          <Property Name="CID" Type="int" Nullable="false" />
+          <Property Name="BID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_campus">
+          <Key>
+            <PropertyRef Name="campusID" />
+          </Key>
+          <Property Name="campusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="campusName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="campusAddress" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="campusDescription" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tbl_course">
+          <Key>
+            <PropertyRef Name="courseID" />
+          </Key>
+          <Property Name="courseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="courseName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="courseInstructor" Type="varchar" MaxLength="30" />
+          <Property Name="courseDescription" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tbl_files">
+          <Key>
+            <PropertyRef Name="fileID" />
+          </Key>
+          <Property Name="fileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fileDispName" Type="varchar(max)" Nullable="false" />
+          <Property Name="filePath" Type="varchar(max)" Nullable="false" />
+          <Property Name="fileType" Type="varchar" MaxLength="10" />
+          <Property Name="fileDescription" Type="varchar(max)" />
+          <Property Name="fileCourse" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_user">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userDisplayName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="userName" Type="varchar" MaxLength="80" />
+          <Property Name="userPassword" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="userCellNumber" Type="varchar" MaxLength="20" />
+          <Property Name="CID" Type="int" Nullable="false" />
+          <Property Name="BID" Type="int" Nullable="false" />
+          <Property Name="userRole" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="userToken" Type="varchar(max)" />
+        </EntityType>
+        <Association Name="FK__tbl_batch_c__BID__2A4B4B5E">
+          <End Role="tbl_batch" Type="Self.tbl_batch" Multiplicity="1" />
+          <End Role="tbl_batch_course" Type="Self.tbl_batch_course" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_batch">
+              <PropertyRef Name="batchID" />
+            </Principal>
+            <Dependent Role="tbl_batch_course">
+              <PropertyRef Name="BID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_batch_c__CID__29572725">
+          <End Role="tbl_course" Type="Self.tbl_course" Multiplicity="1" />
+          <End Role="tbl_batch_course" Type="Self.tbl_batch_course" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_course">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="tbl_batch_course">
+              <PropertyRef Name="CID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_files__fileC__267ABA7A">
+          <End Role="tbl_course" Type="Self.tbl_course" Multiplicity="1" />
+          <End Role="tbl_files" Type="Self.tbl_files" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_course">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="tbl_files">
+              <PropertyRef Name="fileCourse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_user__BID__21B6055D">
+          <End Role="tbl_batch" Type="Self.tbl_batch" Multiplicity="1" />
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_batch">
+              <PropertyRef Name="batchID" />
+            </Principal>
+            <Dependent Role="tbl_user">
+              <PropertyRef Name="BID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_user__CID__20C1E124">
+          <End Role="tbl_campus" Type="Self.tbl_campus" Multiplicity="1" />
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_campus">
+              <PropertyRef Name="campusID" />
+            </Principal>
+            <Dependent Role="tbl_user">
+              <PropertyRef Name="CID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="JamiaRDBModelStoreContainer">
+          <EntitySet Name="tbl_batch" EntityType="Self.tbl_batch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_batch_course" EntityType="Self.tbl_batch_course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_campus" EntityType="Self.tbl_campus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_course" EntityType="Self.tbl_course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_files" EntityType="Self.tbl_files" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_user" EntityType="Self.tbl_user" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_batch_c__BID__2A4B4B5E" Association="Self.FK__tbl_batch_c__BID__2A4B4B5E">
+            <End Role="tbl_batch" EntitySet="tbl_batch" />
+            <End Role="tbl_batch_course" EntitySet="tbl_batch_course" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_batch_c__CID__29572725" Association="Self.FK__tbl_batch_c__CID__29572725">
+            <End Role="tbl_course" EntitySet="tbl_course" />
+            <End Role="tbl_batch_course" EntitySet="tbl_batch_course" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_files__fileC__267ABA7A" Association="Self.FK__tbl_files__fileC__267ABA7A">
+            <End Role="tbl_course" EntitySet="tbl_course" />
+            <End Role="tbl_files" EntitySet="tbl_files" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_user__BID__21B6055D" Association="Self.FK__tbl_user__BID__21B6055D">
+            <End Role="tbl_batch" EntitySet="tbl_batch" />
+            <End Role="tbl_user" EntitySet="tbl_user" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_user__CID__20C1E124" Association="Self.FK__tbl_user__CID__20C1E124">
+            <End Role="tbl_campus" EntitySet="tbl_campus" />
+            <End Role="tbl_user" EntitySet="tbl_user" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="JamiaRDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_batch">
+          <Key>
+            <PropertyRef Name="batchID" />
+          </Key>
+          <Property Name="batchID" Type="Int32" Nullable="false" />
+          <Property Name="batchDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_user" Relationship="Self.FK__tbl_user__BID__21B6055D" FromRole="tbl_batch" ToRole="tbl_user" />
+          <NavigationProperty Name="tbl_course" Relationship="Self.tbl_batch_course" FromRole="tbl_batch" ToRole="tbl_course" />
+        </EntityType>
+        <EntityType Name="tbl_campus">
+          <Key>
+            <PropertyRef Name="campusID" />
+          </Key>
+          <Property Name="campusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="campusName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="campusAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="campusDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_user" Relationship="Self.FK__tbl_user__CID__20C1E124" FromRole="tbl_campus" ToRole="tbl_user" />
+        </EntityType>
+        <EntityType Name="tbl_course">
+          <Key>
+            <PropertyRef Name="courseID" />
+          </Key>
+          <Property Name="courseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="courseName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="courseInstructor" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="courseDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_files" Relationship="Self.FK__tbl_files__fileC__267ABA7A" FromRole="tbl_course" ToRole="tbl_files" />
+          <NavigationProperty Name="tbl_batch" Relationship="Self.tbl_batch_course" FromRole="tbl_course" ToRole="tbl_batch" />
+        </EntityType>
+        <EntityType Name="tbl_files">
+          <Key>
+            <PropertyRef Name="fileID" />
+          </Key>
+          <Property Name="fileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fileDispName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="filePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fileType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="fileDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="fileCourse" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_course" Relationship="Self.FK__tbl_files__fileC__267ABA7A" FromRole="tbl_files" ToRole="tbl_course" />
+        </EntityType>
+        <EntityType Name="tbl_user">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userDisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userName" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="userPassword" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userCellNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CID" Type="Int32" Nullable="false" />
+          <Property Name="BID" Type="Int32" Nullable="false" />
+          <Property Name="userRole" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tbl_batch" Relationship="Self.FK__tbl_user__BID__21B6055D" FromRole="tbl_user" ToRole="tbl_batch" />
+          <NavigationProperty Name="tbl_campus" Relationship="Self.FK__tbl_user__CID__20C1E124" FromRole="tbl_user" ToRole="tbl_campus" />
+          <Property Name="userToken" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK__tbl_user__BID__21B6055D">
+          <End Role="tbl_batch" Type="Self.tbl_batch" Multiplicity="1" />
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_batch">
+              <PropertyRef Name="batchID" />
+            </Principal>
+            <Dependent Role="tbl_user">
+              <PropertyRef Name="BID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_user__CID__20C1E124">
+          <End Role="tbl_campus" Type="Self.tbl_campus" Multiplicity="1" />
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_campus">
+              <PropertyRef Name="campusID" />
+            </Principal>
+            <Dependent Role="tbl_user">
+              <PropertyRef Name="CID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_files__fileC__267ABA7A">
+          <End Role="tbl_course" Type="Self.tbl_course" Multiplicity="1" />
+          <End Role="tbl_files" Type="Self.tbl_files" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_course">
+              <PropertyRef Name="courseID" />
+            </Principal>
+            <Dependent Role="tbl_files">
+              <PropertyRef Name="fileCourse" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="tbl_batch_course">
+          <End Role="tbl_batch" Type="Self.tbl_batch" Multiplicity="*" />
+          <End Role="tbl_course" Type="Self.tbl_course" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="JamiaRDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_batch" EntityType="Self.tbl_batch" />
+          <EntitySet Name="tbl_campus" EntityType="Self.tbl_campus" />
+          <EntitySet Name="tbl_course" EntityType="Self.tbl_course" />
+          <EntitySet Name="tbl_files" EntityType="Self.tbl_files" />
+          <EntitySet Name="tbl_user" EntityType="Self.tbl_user" />
+          <AssociationSet Name="FK__tbl_user__BID__21B6055D" Association="Self.FK__tbl_user__BID__21B6055D">
+            <End Role="tbl_batch" EntitySet="tbl_batch" />
+            <End Role="tbl_user" EntitySet="tbl_user" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_user__CID__20C1E124" Association="Self.FK__tbl_user__CID__20C1E124">
+            <End Role="tbl_campus" EntitySet="tbl_campus" />
+            <End Role="tbl_user" EntitySet="tbl_user" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_files__fileC__267ABA7A" Association="Self.FK__tbl_files__fileC__267ABA7A">
+            <End Role="tbl_course" EntitySet="tbl_course" />
+            <End Role="tbl_files" EntitySet="tbl_files" />
+          </AssociationSet>
+          <AssociationSet Name="tbl_batch_course" Association="Self.tbl_batch_course">
+            <End Role="tbl_batch" EntitySet="tbl_batch" />
+            <End Role="tbl_course" EntitySet="tbl_course" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="JamiaRDBModelStoreContainer" CdmEntityContainer="JamiaRDBEntities">
+          <EntitySetMapping Name="tbl_batch">
+            <EntityTypeMapping TypeName="JamiaRDBModel.tbl_batch">
+              <MappingFragment StoreEntitySet="tbl_batch">
+                <ScalarProperty Name="batchID" ColumnName="batchID" />
+                <ScalarProperty Name="batchDescription" ColumnName="batchDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_campus">
+            <EntityTypeMapping TypeName="JamiaRDBModel.tbl_campus">
+              <MappingFragment StoreEntitySet="tbl_campus">
+                <ScalarProperty Name="campusID" ColumnName="campusID" />
+                <ScalarProperty Name="campusName" ColumnName="campusName" />
+                <ScalarProperty Name="campusAddress" ColumnName="campusAddress" />
+                <ScalarProperty Name="campusDescription" ColumnName="campusDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_course">
+            <EntityTypeMapping TypeName="JamiaRDBModel.tbl_course">
+              <MappingFragment StoreEntitySet="tbl_course">
+                <ScalarProperty Name="courseID" ColumnName="courseID" />
+                <ScalarProperty Name="courseName" ColumnName="courseName" />
+                <ScalarProperty Name="courseInstructor" ColumnName="courseInstructor" />
+                <ScalarProperty Name="courseDescription" ColumnName="courseDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_files">
+            <EntityTypeMapping TypeName="JamiaRDBModel.tbl_files">
+              <MappingFragment StoreEntitySet="tbl_files">
+                <ScalarProperty Name="fileID" ColumnName="fileID" />
+                <ScalarProperty Name="fileDispName" ColumnName="fileDispName" />
+                <ScalarProperty Name="filePath" ColumnName="filePath" />
+                <ScalarProperty Name="fileType" ColumnName="fileType" />
+                <ScalarProperty Name="fileDescription" ColumnName="fileDescription" />
+                <ScalarProperty Name="fileCourse" ColumnName="fileCourse" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_user">
+            <EntityTypeMapping TypeName="JamiaRDBModel.tbl_user">
+              <MappingFragment StoreEntitySet="tbl_user">
+                <ScalarProperty Name="userToken" ColumnName="userToken" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="userDisplayName" ColumnName="userDisplayName" />
+                <ScalarProperty Name="userName" ColumnName="userName" />
+                <ScalarProperty Name="userPassword" ColumnName="userPassword" />
+                <ScalarProperty Name="userCellNumber" ColumnName="userCellNumber" />
+                <ScalarProperty Name="CID" ColumnName="CID" />
+                <ScalarProperty Name="BID" ColumnName="BID" />
+                <ScalarProperty Name="userRole" ColumnName="userRole" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="tbl_batch_course" TypeName="JamiaRDBModel.tbl_batch_course" StoreEntitySet="tbl_batch_course">
+            <EndProperty Name="tbl_batch">
+              <ScalarProperty Name="batchID" ColumnName="BID" />
+            </EndProperty>
+            <EndProperty Name="tbl_course">
+              <ScalarProperty Name="courseID" ColumnName="CID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

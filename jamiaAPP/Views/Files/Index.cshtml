@@ -1,0 +1,594 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+#button{
+	display:block;
+	margin:20px auto;
+	padding:10px 30px;
+	background-color:#eee;
+	border:solid #ccc 3px;
+  cursor: pointer;
+}
+#overlay{
+	position: fixed;
+	top: 0;
+	z-index: 100;
+	width: 100%;
+	height:100%;
+	display: none;
+	background: rgba(0,0,0,0.6);
+}
+.cv-spinner {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.spinner {
+	width: 40px;
+	height: 40px;
+	border: 4px #ddd solid;
+	border-top: 4px #2e93e6 solid;
+	border-radius: 50%;
+	animation: sp-anime 0.8s infinite linear;
+}
+@@keyframes sp-anime {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+.is-hide{
+	display:none;
+}</style>
+
+<!--start-->
+<div style="position:relative;color:white;font-weight:400;font-family:Poppins, sans-serif;width:100%">
+    
+    <div id="overlay">
+        
+        <div class="cv-spinner">
+            <p id="percent"></p>
+            <span class="spinner"></span>
+        </div>
+    </div>
+    <div class="col-md-12" style="padding:0%">
+        <form id="form1" class="form-horizontal" novalidate="novalidate">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Files Management </h4>
+                </div>
+                <div class="card-body">
+
+                    <div class="row" style="padding-left:10%;padding-top:10px">
+
+                        <div class="col-sm-7">
+                            <label class="col-md-12  label-align">Select Course </label>
+                            <select class="selectpicker" required id="select_list"></select>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="field item form-group">
+                        <div id="label_add"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4" style="margin-left:10%">
+                            <h4 class="card-title">Upload File</h4>
+                            <div class="fileinput text-center fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail">
+                                    <img src="../../assets/img/image_placeholder.jpg" alt="...">
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail" style=""></div>
+                                <div>
+                                    <span class="btn btn-rose btn-round btn-file">
+                                        <span class="fileinput-new">Select File</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="hidden" value="" name="..."><input type="file" id="fileinp" required />
+                                    </span>
+                                    <a href="#pablo" id="reset_val" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row" style="padding-left:5%;padding-top:10px">
+                        <label class="col-sm-2 col-form-label">File Description</label>
+                        <div class="col-sm-7">
+                            <div class="form-group">
+                                <textarea class="form-control" id="file_desc" maxlength="200" name="file_desc"></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div id="submit_btns" class="card-footer text-center">
+                    <button class="btn btn-primary " type="reset">Reset</button>
+                    <button type="submit" id="submit" class="btn btn-success">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--end-->
+    <div class="card col-md-12 ">
+        <h2 style="padding:1%">Files Table</h2>
+        <div class="card-body dataTables_wrapper dt-bootstrap4">
+
+            <table id="table1" style="width:100%;font-size:small " class="table table-striped dataTable dtr-inline">
+                <thead>
+                    <tr>
+                        <th>file ID</th>
+                        <th>file Display Name</th>
+                        <th>file Path</th>
+                        <th>file Type</th>
+                        <th>file Description</th>
+                        <th>course Name</th>
+                        <th>Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@*<h2>Index</h2>
+    <form id="form1" enctype="multipart/form-data">
+        <label>upload file</label>
+        <input type="file" id="fileinp" />
+        <textarea id="file_desc"></textarea>
+        <input type="submit" />
+    </form>*@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+    
+
+    function setFormValidation(id) {
+        $(id).validate({
+            highlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-danger');
+                $(element).closest('.form-check').removeClass('has-success').addClass('has-danger');
+            },
+            success: function (element) {
+                $(element).closest('.form-group').removeClass('has-danger').addClass('has-success');
+                $(element).closest('.form-check').removeClass('has-danger').addClass('has-success');
+
+
+            },
+            errorPlacement: function (error, element) {
+                $(element).closest('.form-group').append(error);
+            },
+
+        });
+
+    }
+
+
+    $(document).ready(function () {
+
+        setFormValidation('#form1');
+
+
+
+    });
+
+    $("#form1").submit(function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log($("#form1").valid())
+        if ($("#form1").valid() == true && $("#fileinp").val() != "") {
+
+            postform(e)
+        }
+        else {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Form Is Not Valid!! Record Not Saved!!',
+                showConfirmButton: true,
+
+            })
+        }
+    });
+</script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+
+<script>
+    //post
+    var tbl;
+    function postform(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $("#overlay").fadeIn(300);
+        //$("#loader").show();
+        
+        var courseID = parseInt($('#select_list option:selected').text().split('.')[0]);
+
+        var fileUpload = $("#fileinp").get(0);
+        var files = fileUpload.files;
+        var dataa = new FormData();
+        dataa.append('description', $("#file_desc").val());
+        dataa.append('courseID', courseID);
+        dataa.append("file", files[0])
+        console.log(dataa);
+
+        
+
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+                        $("#percent").text(Math.floor(percentComplete) + " %");
+                    }
+                }, false);
+                return xhr;
+            },
+            method: "POST",
+            url: " ../Files/Create",
+            data: dataa,
+            processData: false,
+            contentType: false,
+
+            success: function (res) {
+                $("#overlay").fadeOut(300);
+               // alert(res)
+                reset();
+                $("#reset_val").click();
+                tbl.ajax.reload();
+                if (res == "success") {
+
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: res,
+                        showConfirmButton: true,
+
+                    });
+                }
+                else {
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: res,
+                        showConfirmButton: true,
+
+                    });
+
+                }
+
+            }
+        });
+
+    }
+
+
+
+    $(document).ready(function () {
+
+        
+        
+
+
+        $.ajax({
+            method: "GET",
+            url: " ../Course/List",
+            success: function (res) {
+                res.forEach(function (element) {
+
+                    $('#select_list').append($('<option/>', {
+                        value: element.courseID + "." + element.courseName,
+                        text: element.courseID + "." + element.courseName,
+                    }));
+
+
+                });
+
+                $('#select_list').selectpicker('refresh');
+                $('#select_list').selectpicker('val', res[0].courseID + "." + res[0].courseName);
+
+            }
+        });
+
+
+        tbl = $('#table1').DataTable({
+            ajax: {
+                url: '../Files/List',
+                dataSrc: ''
+            },
+            responsive: true,
+            columns: [
+                { data: 'fileID' },
+                { data: 'fileDispName' },
+                {
+                    data: null,
+                    render: function (data) {
+
+                        if (data.fileType == ".mpeg" || data.fileType == ".mp4") {
+                            return `<video  width = "300" height = "200" controls autoplay>
+                                <source src = "../assets/files/`+ data.fileDispName + `" type ="video/mp4" />
+
+                                    Your browser does not support the <video> element.
+                                </video>`;
+                        }
+
+
+                        else if (data.fileType == ".pdf") {
+                            return `<img width = "50" height = "50" src="../assets/img/1200px-PDF_file_icon.svg.png"/>`
+                        }
+
+
+                        else if (data.fileType == ".docx") {
+                            return `<img width = "50" height = "50" src="../assets/img/docxIcon.png"/>`
+                        }
+
+
+                        else if (data.fileType == ".xlsx") {
+                            return `<img width = "50" height = "50" src="../assets/img/xlsxicon.png"/>`
+                        }
+
+                        else if (data.fileType == ".rar" || data.fileType == ".zip") {
+                            return `<img width = "50" height = "50" src="../assets/img/file_formats3_rar-512.png "/>`
+                        }
+
+                        else if (data.fileType == ".jpg") {
+                            return `<img width = "100" height = "100" src="../assets/files/` + data.fileDispName + `" />`
+                        }
+
+
+                        else if (data.fileType == ".mp3") {
+                            return `<audio controls>
+
+                                    <source src="../assets/files/` + data.fileDispName + `" type="audio/mpeg">
+                                    Your browser does not support the audio tag.
+                                    </audio>`
+                        }
+                        else {
+                            return `<img width = "50" height = "50" src="../assets/img/Download-Icon.png "/>`
+                        }
+
+                    }
+
+                },
+                { data: 'fileType' },
+                { data: 'fileDescription' },
+                { data: 'courseName' },
+
+
+                //{
+                //    data: 'fileID',
+                //    render: function (fileID) {
+                //        return '<button class="btn btn-primary btn-sm" onclick="edit(' + fileID + ')">Edit</button>'
+                //    }
+                //},
+                //{
+                //    data: 'fileID',
+                //    render: function (fileID) {
+                       
+                //        return '<button  class="btn btn-danger btn-sm" onclick="delete_c(' + fileID + ')">Delete</button>'
+                //    }
+                //},
+
+                {
+                    data: null,
+                    render: function (data) {
+                        return   ` <a href="javascript:void(0)" onclick='edit(${data.fileID})' class="btn btn-link btn-warning btn-icon btn-sm edit" >
+                                 <i class="tim-icons icon-pencil"></i>    
+                                 </a>
+                                 <a href="javascript:void(0)" onclick='delete_c(${data.fileID})' class="btn btn-link btn-danger btn-icon btn-sm remove" >
+                                 <i class="tim-icons icon-simple-remove"></i>    
+                                 </a>
+                                 <a href="../Files/DownloadAttachment?filename=` + data.fileDispName +`" class="btn btn-link btn-info btn-icon btn-sm like"><i class="tim-icons icon-cloud-download-93 "></i></a>`
+
+                         //`<a href="../Files/DownloadAttachment?filename=` + fileDispName +`" class="btn btn-link btn-info btn-icon btn-sm like"><i class="tim-icons icon-cloud-download-93 "></i></a>`
+                                
+                    }
+                },
+            ],
+            searching: true,
+        });
+
+
+    });
+
+
+
+    function delete_c(fileID) {
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                swalWithBootstrapButtons.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+
+                $.ajax({
+                    type: "POST",
+                    url: "../Files/Delete/" + fileID,
+                    success: function () {
+                        tbl.ajax.reload();
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+            }
+        })
+
+
+    }
+    var filetitle = null;
+    function edit(fileID) {
+        console.log(fileID);
+        $.ajax({
+            type: "GET",
+            url: "../Files/Details/" + fileID,
+            success: function (data) {
+                console.log(data[0])
+                $("#label_add").append("<label id='lab1'> </label>")
+
+                //$('#select_list option:selected').text(data[0].fileCourse + "." + data[0].courseName);
+                $('#select_list').selectpicker('val', data[0].fileCourse + "." + data[0].courseName);
+                filetitle = data[0].fileDispName;
+                $("#lab1").text("File Title : " + data[0].fileDispName);
+                $("#file_desc").val(data[0].fileDescription);
+                $("#submit_btns").replaceWith(`<div class="card-footer text-center" id="edit_btn">
+                                             <button type="button" class="btn btn-primary" onclick='validate_edit(` + fileID + `)'>Edit</button>
+                                             <button type="button" class="btn btn-primary" onclick='cancel_edit()'>Clear</button>
+                                             </div> `);
+                window.scrollTo(0, 0)
+
+
+            }
+        });
+    }
+
+    function cancel_edit() {
+       
+
+        $("#lab1").remove();
+        $('#edit_btn').replaceWith(`<div id="submit_btns" class="card-footer text-center">
+                    <button class="btn btn-primary " type="reset">Reset</button>
+                    <button type="submit" id="submit" class="btn btn-success">Submit</button>
+                </div>`)
+    }
+    function validate_edit(fileID) {
+        console.log($("#form1").valid())
+        if ($("#form1").valid() == true ) {
+
+            add_file(fileID);
+        }
+        else {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Form Is Not Valid!! Record Not Saved!!',
+                showConfirmButton: true,
+
+            })
+        }
+
+
+
+    }
+
+    function add_file(fileID) {
+
+        $("#lab1").remove();
+        console.log("edit")
+        $("#overlay").fadeIn(300);
+        var courseID = parseInt($('#select_list option:selected').text().split('.')[0]);
+        var dataa = new FormData();
+
+        var fileUpload = $("#fileinp").get(0);
+        var files = fileUpload.files;
+        dataa.append("file", files[0])
+        dataa.append('description', $("#file_desc").val());
+
+        dataa.append('courseID', courseID);
+
+
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = (evt.loaded / evt.total) * 100;
+                        $("#percent").text(Math.floor(percentComplete) + " %");
+                    }
+                }, false);
+                return xhr;
+            },
+            type: "POST",
+            url: "../Files/Edit/" + fileID,
+            data: dataa,
+            processData: false,
+            contentType: false,
+
+            success: function (res) {
+                $("#overlay").fadeOut(300);
+                
+
+                tbl.ajax.reload();
+                cancel_edit();
+                $("#reset_val").click();
+                if (res == "success") {
+
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: res,
+                        showConfirmButton: true,
+
+                    });
+                }
+                else {
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: res,
+                        showConfirmButton: true,
+
+                    });
+
+                }
+                
+            }
+        })
+    }
+    function reset() {
+        $("#file_desc").val("");
+        
+
+
+    }
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
+
+</script>
